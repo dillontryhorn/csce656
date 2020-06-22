@@ -34,6 +34,6 @@ class Tile
     private: //initialized to zero
         int x = 0;
         int y = 0;
-        int id = 0;
+        int id = 0;     //0 - neutral, 1 - goal, 2 - enemy
         bool discovered = false;
 };

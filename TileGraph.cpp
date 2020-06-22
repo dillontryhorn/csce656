@@ -43,11 +43,7 @@ std::list<std::shared_ptr<Tile>> TileGraph::GetNeighbors(std::shared_ptr<Tile> t
         auto neighbor = TileGraph::GetTile(tile->getX() + direction.first, tile->getY() + direction.second);
         if(neighbor != nullptr)
         {
-            if(neighbor->getX() >= 0 && neighbor->getX() < this->X &&
-            neighbor->getY() >= 0 && neighbor->getY() < this->Y)
-            {
-                neighbors.emplace_back(std::move(neighbor));
-            }
+            neighbors.emplace_back(std::move(neighbor));
         }
     }
     return std::move(neighbors);
@@ -98,30 +94,46 @@ void TileGraph::SequentialDFS(int x, int y)
 {
     this->searchPath.clear();
     auto startingTile = TileGraph::GetTile(x, y);
+
     if(startingTile != nullptr)
     {
         startingTile->setDiscovered(true);
         this->searchPath.emplace_back(startingTile);
+        if(startingTile->getID() == 1) //goal node
+            return;
         auto neighbors = TileGraph::GetNeighbors(startingTile);
         for( auto neighbor : neighbors )
         {
-            SequentialDFS_helper(neighbor);
+            if(SequentialDFS_helper(neighbor) == 1) //goal node found
+                break;
         }
     }
-    assert(this->searchPath.size() == this->tilegraph.size());
 }
 
-void TileGraph::SequentialDFS_helper(std::shared_ptr<Tile> tile)
+int TileGraph::SequentialDFS_helper(std::shared_ptr<Tile> tile)
 {
     if(!tile->isDiscovered())
     {
         tile->setDiscovered(true);
         this->searchPath.emplace_back(tile);
     }
+    if(tile->getID() == 1) //goal node
+        return 1;
     auto neighbors = TileGraph::GetNeighbors(tile);
     for(auto neighbor : neighbors)
     {
         if(!neighbor->isDiscovered())
-            SequentialDFS_helper(neighbor);
+        {
+            if(SequentialDFS_helper(neighbor) == 1)
+                return 1;
+        }
     }
+    return 0;
+}
+
+void TileGraph::PrintSearchPath()
+{
+    for(auto tile : searchPath)
+        tile->printInfo();
+    std::cout << "Took " << searchPath.size() << " searches. " << std::endl;
 }

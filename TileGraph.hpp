@@ -24,12 +24,14 @@ class TileGraph
 
         std::shared_ptr<Tile> GetTile(int x, int y);
         
-        void SetTileInfo(int x, int y, int new_x, int new_y, int id, bool discovered);
+        void SetTileInfo(int x, int y, int new_x, int new_y, int new_id, bool new_discovered);
         void SetTileID(int x, int y, int new_id);
         void SetTileDiscovered(int x, int y, bool new_discovered);
 
         void SequentialDFS(int x, int y);
-        void SequentialDFS_helper(std::shared_ptr<Tile> tile);
+        int SequentialDFS_helper(std::shared_ptr<Tile> tile);
+
+        void PrintSearchPath();
 
     private:
         std::list<std::shared_ptr<Tile>> tilegraph;
