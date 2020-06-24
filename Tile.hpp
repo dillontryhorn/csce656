@@ -13,6 +13,7 @@ class Tile
         //constructors
         Tile();                                      //all values should already be initialized to 0
         Tile(int x, int y);                          //other values initialized to 0
+        Tile(int x, int y, int id);                  //discovered = 0
         Tile(int x, int y, int id, bool discovered); //full customization
         ~Tile() = default;
 

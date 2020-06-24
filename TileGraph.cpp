@@ -1,7 +1,6 @@
 #include "TileGraph.hpp"
 
 #include <iostream>
-#include "assert.h"
 
 TileGraph::TileGraph()
 {
@@ -35,9 +34,9 @@ TileGraph::TileGraph(int X, int Y)
     std::cout << "Constructed a " << X << " x " << Y << " tile grid." << std::endl;
 }
 
-std::list<std::shared_ptr<Tile>> TileGraph::GetNeighbors(std::shared_ptr<Tile> tile)
+std::vector<std::shared_ptr<Tile>> TileGraph::GetNeighbors(std::shared_ptr<Tile> tile)
 {   
-    std::list<std::shared_ptr<Tile>> neighbors;
+    std::vector<std::shared_ptr<Tile>> neighbors;
     for(auto direction : this->possible_directions)
     {
         auto neighbor = TileGraph::GetTile(tile->getX() + direction.first, tile->getY() + direction.second);
@@ -68,72 +67,4 @@ std::shared_ptr<Tile> TileGraph::GetTile(int x, int y)
         }
     }
     return nullptr;
-}
-
-void TileGraph::SetTileInfo(int x, int y, int new_x, int new_y, int new_id, bool new_discovered)
-{
-    auto tile = TileGraph::GetTile(x, y);
-    tile->setCoordinate(new_x, new_y);
-    tile->setID(new_id);
-    tile->setDiscovered(new_discovered);
-}
-
-void TileGraph::SetTileID(int x, int y, int new_id)
-{
-    auto tile = TileGraph::GetTile(x, y);
-    tile->setID(new_id);
-}
-
-void TileGraph::SetTileDiscovered(int x, int y, bool new_discovered)
-{
-    auto tile = TileGraph::GetTile(x, y);
-    tile->setDiscovered(new_discovered);
-}
-
-void TileGraph::SequentialDFS(int x, int y)
-{
-    this->searchPath.clear();
-    auto startingTile = TileGraph::GetTile(x, y);
-
-    if(startingTile != nullptr)
-    {
-        startingTile->setDiscovered(true);
-        this->searchPath.emplace_back(startingTile);
-        if(startingTile->getID() == 1) //goal node
-            return;
-        auto neighbors = TileGraph::GetNeighbors(startingTile);
-        for( auto neighbor : neighbors )
-        {
-            if(SequentialDFS_helper(neighbor) == 1) //goal node found
-                break;
-        }
-    }
-}
-
-int TileGraph::SequentialDFS_helper(std::shared_ptr<Tile> tile)
-{
-    if(!tile->isDiscovered())
-    {
-        tile->setDiscovered(true);
-        this->searchPath.emplace_back(tile);
-    }
-    if(tile->getID() == 1) //goal node
-        return 1;
-    auto neighbors = TileGraph::GetNeighbors(tile);
-    for(auto neighbor : neighbors)
-    {
-        if(!neighbor->isDiscovered())
-        {
-            if(SequentialDFS_helper(neighbor) == 1)
-                return 1;
-        }
-    }
-    return 0;
-}
-
-void TileGraph::PrintSearchPath()
-{
-    for(auto tile : searchPath)
-        tile->printInfo();
-    std::cout << "Took " << searchPath.size() << " searches. " << std::endl;
 }

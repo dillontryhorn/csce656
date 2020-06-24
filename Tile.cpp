@@ -11,6 +11,13 @@ Tile::Tile(int x, int y)
     this->y = y;
 } //other values initialized to 0
 
+Tile::Tile(int x, int y, int id)
+{
+    this->x = x;
+    this->y = y;
+    this->id = id;
+} //discovered = 0
+
 Tile::Tile(int x, int y, int id, bool discovered)
 {
     this->x = x;
