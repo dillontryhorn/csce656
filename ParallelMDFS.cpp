@@ -1,7 +1,7 @@
 #include "ParallelMDFS.hpp"
 
 #include <atomic>
-#include <omp.h>
+#include <iostream>
 #include <tuple>
 
 std::atomic<bool> found (false);
@@ -26,10 +26,16 @@ void ParallelMDFS::Execute(int x, int y, int num_threads)
             if(found) continue;
             if((*it)->getID() != 2)
             {
+                omp_set_lock(&writelock);
                 std::vector<std::shared_ptr<Tile>> localSearchVector;
-                auto results = Worker(*it, localSearchVector);
+                std::shared_ptr<TileGraph> localTileGraph = std::make_shared<TileGraph>(*(this->tilegraph));
+                auto localTile = std::make_shared<Tile>(*(*it));
+                omp_unset_lock(&writelock);
+                auto results = ParallelMDFS::Worker(localTile, localSearchVector, localTileGraph);
                 if(std::get<0>(results) == 1) //goal node found
                 {
+                    std::cout << std::get<0>(results) << std::endl;
+                    std::cout << std::get<1>(results).size() << std::endl;
                     for(auto it = std::get<1>(results).begin(); it < std::get<1>(results).end(); it++)
                     {
                         this->searchPath.emplace_back(*it);
@@ -41,7 +47,7 @@ void ParallelMDFS::Execute(int x, int y, int num_threads)
     }
 }
 
-std::tuple<int, std::vector<std::shared_ptr<Tile>>> ParallelMDFS::Worker(std::shared_ptr<Tile> tile, std::vector<std::shared_ptr<Tile>> localSearchVector)
+std::tuple<int, std::vector<std::shared_ptr<Tile>>> ParallelMDFS::Worker(std::shared_ptr<Tile> tile, std::vector<std::shared_ptr<Tile>> localSearchVector, std::shared_ptr<TileGraph> localTileGraph)
 {
     if(!tile->isDiscovered())
     {
@@ -50,12 +56,12 @@ std::tuple<int, std::vector<std::shared_ptr<Tile>>> ParallelMDFS::Worker(std::sh
     }
     if(tile->getID() == 1)
         return std::tuple<int, std::vector<std::shared_ptr<Tile>>>(1, localSearchVector);
-    auto neighbors = this->tilegraph->GetNeighbors(tile);
+    auto neighbors = localTileGraph->GetNeighbors(tile);
     for(auto neighbor : neighbors)
     {
         if(neighbor->getID() != 2 || !neighbor->isDiscovered())
         {
-            if(std::get<0>(Worker(neighbor, localSearchVector)) == 1)
+            if(std::get<0>(ParallelMDFS::Worker(neighbor, localSearchVector, localTileGraph)) == 1)
                 return std::tuple<int, std::vector<std::shared_ptr<Tile>>>(1, localSearchVector);
         }
     }
