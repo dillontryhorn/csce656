@@ -21,11 +21,13 @@ class Tile
         int getX();
         int getY();
         int getID();
+        int getHeuristic();
         bool isDiscovered();
 
         //setters
         void setCoordinate(int x, int y);
         void setID(int id);
+        void setHeuristic(int heuristic);
         void setDiscovered(bool discovered);
 
         //displayers
@@ -36,5 +38,6 @@ class Tile
         int x = 0;
         int y = 0;
         int id = 0;     //0 - neutral, 1 - goal, 2 - enemy
+        int heuristic = 0;
         bool discovered = false;
 };

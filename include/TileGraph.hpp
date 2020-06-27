@@ -24,6 +24,10 @@ class TileGraph
         void PrintNeighbors(int x, int y);
 
         std::shared_ptr<Tile> GetTile(int x, int y);
+        std::vector<std::shared_ptr<Tile>> GetAllTiles();
+
+        int GetSizeX();
+        int GetSizeY();
 
     private:
         std::vector<std::shared_ptr<Tile>> tilegraph;

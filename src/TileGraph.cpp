@@ -68,3 +68,21 @@ std::shared_ptr<Tile> TileGraph::GetTile(int x, int y)
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<Tile>> TileGraph::GetAllTiles()
+{
+    std::vector<std::shared_ptr<Tile>> allTiles;
+    for(auto tile : this->tilegraph)
+        allTiles.push_back(tile);
+    return allTiles;
+}
+
+int TileGraph::GetSizeX()
+{
+    return this->X;
+}
+
+int TileGraph::GetSizeY()
+{
+    return this->Y;
+}

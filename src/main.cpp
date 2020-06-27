@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     IterativeMDFS mdfs_iterative(200, 200);
 
     //Goal tile (x, y, goal_id = 1)
-    mdfs_iterative.SetTileID(95, 38, 1);
+    mdfs_iterative.SetGoalTile(95, 38);
 
     //Enemy tiles (x, y, enemy_id = 2)
     mdfs_iterative.SetTileID(1, 2, 2);
@@ -46,26 +46,26 @@ int main(int argc, char* argv[])
     //------------------------------------------------------------------------
     //      Parallel Implementation
     //------------------------------------------------------------------------
-    ParallelMDFS mdfs_parallel(200, 200, 4); //4 threads
+    // ParallelMDFS mdfs_parallel(200, 200, 4); //4 threads
 
-    mdfs_parallel.SetTileID(95, 38, 1);
+    // mdfs_parallel.SetGoalTile(95, 38);
 
-    mdfs_parallel.SetTileID(1, 2, 2);
-    mdfs_parallel.SetTileID(1, 8, 2);
+    // mdfs_parallel.SetTileID(1, 2, 2);
+    // mdfs_parallel.SetTileID(1, 8, 2);
 
-    std::cout << "Running parallel modified depth first search" << std::endl;
-    start = std::chrono::steady_clock::now();
-    mdfs_parallel.Execute(0, 0);
-    end = std::chrono::steady_clock::now();
-    //mdfs_parallel.PrintSearchPathCoords();
-    std::cout << "Parallel modified depth first search complete. Took "
-              << std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count()
-              << " nanoseconds. " << "Goal node found: ";
-    if(success)
-        std::cout << "yes";
-    else
-        std::cout << "no";
-    std::cout << std::endl << std::endl;
+    // std::cout << "Running parallel modified depth first search" << std::endl;
+    // start = std::chrono::steady_clock::now();
+    // mdfs_parallel.Execute(0, 0);
+    // end = std::chrono::steady_clock::now();
+    // //mdfs_parallel.PrintSearchPathCoords();
+    // std::cout << "Parallel modified depth first search complete. Took "
+    //           << std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count()
+    //           << " nanoseconds. " << "Goal node found: ";
+    // if(success)
+    //     std::cout << "yes";
+    // else
+    //     std::cout << "no";
+    // std::cout << std::endl << std::endl;
 
     return 0;
 }

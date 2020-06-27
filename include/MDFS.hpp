@@ -25,11 +25,17 @@ class MDFS
         void SetTileID(int x, int y, int new_id);
         void SetTileDiscovered(int x, int y, bool new_discovered);
 
+        void SetGoalTile(int x, int y);
+
         std::vector<std::shared_ptr<Tile>> GetSearchPath();
         void PrintSearchPath();
         void PrintSearchPathCoords();
 
+        int calculateHeuristic(int x, int y);
+        int calculateHeuristic(std::shared_ptr<Tile> tile);
+
     protected:
         std::shared_ptr<TileGraph> tilegraph;
         std::vector<std::shared_ptr<Tile>> searchPath;
+        std::shared_ptr<Tile> goalTile = nullptr;
 };

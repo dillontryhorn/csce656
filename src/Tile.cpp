@@ -41,6 +41,11 @@ int Tile::getID()
     return this->id;
 }
 
+int Tile::getHeuristic()
+{
+    return this->heuristic;
+}
+
 bool Tile::isDiscovered()
 {
     return this->discovered;
@@ -57,6 +62,11 @@ void Tile::setID(int id)
     this->id = id;
 }
 
+void Tile::setHeuristic(int heuristic)
+{
+    this->heuristic = heuristic;
+}
+
 void Tile::setDiscovered(bool discovered)
 {
     this->discovered = discovered;
@@ -65,7 +75,7 @@ void Tile::setDiscovered(bool discovered)
 void Tile::printInfo() //print all info
 {
     std::cout << "Tile Coordinate: (" << this->x << ", " << this->y << ") with ID: " 
-              << this->id << " and Discovered: " << this->discovered << std::endl;
+              << this->id << " Heuristic: " << this->heuristic << " and Discovered: " << this->discovered << std::endl;
 }
 
 void Tile::printCoords() //just print x and y

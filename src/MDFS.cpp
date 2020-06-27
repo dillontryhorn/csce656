@@ -1,6 +1,7 @@
 #include "MDFS.hpp"
 
 #include <iostream>
+#include <stdlib.h>
 
 MDFS::MDFS()
 {
@@ -32,6 +33,16 @@ void MDFS::SetTileDiscovered(int x, int y, bool new_discovered)
     tile->setDiscovered(new_discovered);
 }
 
+void MDFS::SetGoalTile(int x, int y)
+{
+    MDFS::SetTileID(x, y, 1);
+    this->goalTile = this->tilegraph->GetTile(x, y);
+    for(auto tile : this->tilegraph->GetAllTiles())
+    {
+        tile->setHeuristic(MDFS::calculateHeuristic(tile));
+    }
+}
+
 std::vector<std::shared_ptr<Tile>> MDFS::GetSearchPath()
 {
     return this->searchPath;
@@ -49,4 +60,14 @@ void MDFS::PrintSearchPathCoords()
     for(auto tile : searchPath)
         tile->printCoords();
     std::cout << "Search path size: " << searchPath.size() << std::endl;
+}
+
+int MDFS::calculateHeuristic(int x, int y)
+{
+    return abs(x - this->goalTile->getX()) + abs(y - this->goalTile->getY());
+}
+
+int MDFS::calculateHeuristic(std::shared_ptr<Tile> tile)
+{
+    return abs(tile->getX() - this->goalTile->getX()) + abs(tile->getY() - this->goalTile->getY());
 }
