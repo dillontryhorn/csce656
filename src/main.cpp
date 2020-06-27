@@ -17,39 +17,55 @@ int main(int argc, char* argv[])
     
     if(argv[0] == nullptr) {}
     
-    std::cout << "Running iterative modified depth first search" << std::endl;
-    IterativeMDFS mdfs_iterative;
+    //------------------------------------------------------------------------
+    //      Iterative (Sequential) Implementation
+    //------------------------------------------------------------------------
+    IterativeMDFS mdfs_iterative(200, 200);
 
     //Goal tile (x, y, goal_id = 1)
-    mdfs_iterative.SetTileID(1, 9, 1);
+    mdfs_iterative.SetTileID(95, 38, 1);
 
     //Enemy tiles (x, y, enemy_id = 2)
     mdfs_iterative.SetTileID(1, 2, 2);
     mdfs_iterative.SetTileID(1, 8, 2);
 
+    std::cout << "Running iterative modified depth first search" << std::endl;
     auto start = std::chrono::steady_clock::now();
-    mdfs_iterative.Execute(0, 0);
+    bool success = mdfs_iterative.Execute(0, 0);
     auto end = std::chrono::steady_clock::now();
-    mdfs_iterative.PrintSearchPath();
+    //mdfs_iterative.PrintSearchPathCoords();
     std::cout << "Iterative modified depth first search complete. Took "
               << std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count()
-              << " nanoseconds. " << std::endl << std::endl;
+              << " nanoseconds. " << "Goal node found: ";
+    if(success)
+        std::cout << "yes";
+    else
+        std::cout << "no";
+    std::cout << std::endl << std::endl;
 
-    std::cout << "Running parallel modified depth first search" << std::endl;
-    ParallelMDFS mdfs_parallel;
+    //------------------------------------------------------------------------
+    //      Parallel Implementation
+    //------------------------------------------------------------------------
+    ParallelMDFS mdfs_parallel(200, 200, 4); //4 threads
 
-    mdfs_parallel.SetTileID(1, 9, 1);
+    mdfs_parallel.SetTileID(95, 38, 1);
 
     mdfs_parallel.SetTileID(1, 2, 2);
     mdfs_parallel.SetTileID(1, 8, 2);
 
+    std::cout << "Running parallel modified depth first search" << std::endl;
     start = std::chrono::steady_clock::now();
     mdfs_parallel.Execute(0, 0);
     end = std::chrono::steady_clock::now();
-    mdfs_parallel.PrintSearchPath();
+    //mdfs_parallel.PrintSearchPathCoords();
     std::cout << "Parallel modified depth first search complete. Took "
               << std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count()
-              << " nanoseconds. " << std::endl << std::endl;
-    
+              << " nanoseconds. " << "Goal node found: ";
+    if(success)
+        std::cout << "yes";
+    else
+        std::cout << "no";
+    std::cout << std::endl << std::endl;
+
     return 0;
 }

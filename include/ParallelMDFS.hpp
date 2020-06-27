@@ -8,14 +8,23 @@
 class ParallelMDFS : public MDFS
 {
     public:
-        ParallelMDFS() : MDFS() {omp_init_lock(&writelock);}
-        ParallelMDFS(int X, int Y) : MDFS(X, Y) {omp_init_lock(&writelock);}
-        ~ParallelMDFS() {omp_destroy_lock(&writelock);}
+        ParallelMDFS() : MDFS() { SP_vector.emplace_back(*(new std::vector<std::shared_ptr<Tile>>())); }
+        ParallelMDFS(unsigned int num_threads) : MDFS() {
+                                                            this->num_threads = num_threads;
+                                                            for(unsigned int i = 0; i < num_threads; i++)
+                                                                SP_vector.emplace_back(*(new std::vector<std::shared_ptr<Tile>>()));
+                                                        } 
+        ParallelMDFS(int X, int Y, unsigned int num_threads) : MDFS(X, Y) { this->num_threads = num_threads;
+                                                                            for(unsigned int i = 0; i < num_threads; i++)
+                                                                                SP_vector.emplace_back(*(new std::vector<std::shared_ptr<Tile>>()));
+                                                                          }
+        ParallelMDFS(int X, int Y) : MDFS(X, Y) {}
+        ~ParallelMDFS() {}
 
-        void Execute(int x, int y, int num_threads = 4);
-        std::tuple<int, std::vector<std::shared_ptr<Tile>>> Worker(std::shared_ptr<Tile> tile, 
-                                                  std::vector<std::shared_ptr<Tile>> localSearchVector,
-                                                  std::shared_ptr<TileGraph> localTileGraph);
+        bool Execute(int x, int y);
+        int Worker(std::shared_ptr<Tile> tile, std::vector<std::shared_ptr<Tile>> localSP);
     private:
-        omp_lock_t writelock;
+        unsigned int num_threads = 1;
+        std::vector<std::vector<std::shared_ptr<Tile>>> SP_vector;
+
 };

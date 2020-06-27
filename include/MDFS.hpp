@@ -27,6 +27,7 @@ class MDFS
 
         std::vector<std::shared_ptr<Tile>> GetSearchPath();
         void PrintSearchPath();
+        void PrintSearchPathCoords();
 
     protected:
         std::shared_ptr<TileGraph> tilegraph;

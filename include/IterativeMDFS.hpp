@@ -8,6 +8,6 @@ class IterativeMDFS : public MDFS
         IterativeMDFS() : MDFS() {};
         IterativeMDFS(int X, int Y) : MDFS(X, Y) {};
 
-        void Execute(int x, int y);
+        bool Execute(int x, int y);
         int Worker(std::shared_ptr<Tile> tile);
 };

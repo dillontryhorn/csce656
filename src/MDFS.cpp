@@ -43,3 +43,10 @@ void MDFS::PrintSearchPath()
         tile->printInfo();
     std::cout << "Search path size: " << searchPath.size() << std::endl;
 }
+
+void MDFS::PrintSearchPathCoords()
+{
+    for(auto tile : searchPath)
+        tile->printCoords();
+    std::cout << "Search path size: " << searchPath.size() << std::endl;
+}
