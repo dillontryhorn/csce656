@@ -1,5 +1,4 @@
 #include "IterativeMDFS.hpp"
-#include <atomic>
 #include <iostream>
 #include <bits/stdc++.h> 
 

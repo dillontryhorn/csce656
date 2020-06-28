@@ -3,65 +3,62 @@
 #include <atomic>
 #include <iostream>
 #include <tuple>
-
-std::atomic<bool> found (false);
-std::atomic<int> searchPath_id (0);
+#include <bits/stdc++.h> 
 
 bool ParallelMDFS::Execute(int x, int y)
 {
-    this->searchPath.clear();
-    auto startingTile = this->tilegraph->GetTile(x, y);
-
-    if(startingTile != nullptr && startingTile->getID() != 2)
+    if(this->goalTile != nullptr)
     {
-        startingTile->setDiscovered(true);
-        this->searchPath.emplace_back(startingTile);
-        if(startingTile->getID() == 1)
-            return true;
-        auto neighbors = this->tilegraph->GetNeighbors(startingTile);
-        if(this->num_threads > neighbors.size())
-            this->num_threads = neighbors.size();
-        #pragma omp parallel for shared(found) num_threads(num_threads)
-        for(auto it = neighbors.begin(); it < neighbors.end(); it++)
+        this->searchPath.clear();
+        auto startingTile = this->tilegraph->GetTile(x, y);
+        
+        if(startingTile != nullptr && startingTile->getID() != 2)
         {
-            if(found) continue;
-            if((*it)->getID() != 2)
+            startingTile->setDiscovered(true);
+            this->searchPath.emplace_back(startingTile);
+            if(startingTile->getID() == 1) //goal node
+                return true;
+            auto neighbors = this->tilegraph->GetNeighbors(startingTile);
+            std::vector<std::tuple<int, std::shared_ptr<Tile>>> hTups;
+            for(auto neighbor : neighbors)
+                hTups.emplace_back(neighbor->getHeuristic(), neighbor);
+            std::sort(hTups.begin(), hTups.end());
+            for( auto tup : hTups )
             {
-                auto localSP = this->SP_vector.at(searchPath_id);
-                searchPath_id++;
-                localSP.emplace_back(startingTile);
-                if(ParallelMDFS::Worker(*it, localSP) == 1)
-                    found = true;
+                if(std::get<1>(tup)->getID() != 2) //don't cross into enemy node
+                {
+                    if(ParallelMDFS::Worker(std::get<1>(tup)) == 1) //goal node found
+                        return true;
+                }
             }
         }
     }
-    if(found)
-        return true;
-    else
-        return false;
+    return false; //goal node not found
 }
 
-int ParallelMDFS::Worker(std::shared_ptr<Tile> tile, std::vector<std::shared_ptr<Tile>> localSP)
+int ParallelMDFS::Worker(std::shared_ptr<Tile> tile)
 {
-    if(!tile->isDiscovered())
+    if(tile != nullptr)
     {
-        tile->setDiscovered(true);
-        localSP.emplace_back(tile);
-    }
-
-    if(tile->getID() == 1)
-    {
-        this->searchPath = localSP;
-        return 1;
-    }
-
-    auto neighbors = this->tilegraph->GetNeighbors(tile);
-    for(auto neighbor : neighbors)
-    {
-        if(neighbor->getID() != 2 && !neighbor->isDiscovered())
+        if(!tile->isDiscovered())
         {
-            if(ParallelMDFS::Worker(neighbor, localSP) == 1)
-                return 1;
+            tile->setDiscovered(true);
+            this->searchPath.emplace_back(tile);
+        }
+        if(tile->getID() == 1) //goal node
+            return 1;
+        auto neighbors = this->tilegraph->GetNeighbors(tile);
+        std::vector<std::tuple<int, std::shared_ptr<Tile>>> hTups;
+        for(auto neighbor : neighbors)
+            hTups.emplace_back(neighbor->getHeuristic(), neighbor);
+        std::sort(hTups.begin(), hTups.end());
+        for(auto tup : hTups)
+        {
+            if(std::get<1>(tup)->getID() != 2 && !std::get<1>(tup)->isDiscovered()) //don't cross into enemy node
+            {
+                if(ParallelMDFS::Worker(std::get<1>(tup)) == 1) //goal node found
+                    return 1;
+            }
         }
     }
     return 0;
