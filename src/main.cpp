@@ -10,20 +10,26 @@
  * Author: Dillon Tryhorn
  */
 
+void displayHelp(char* name)
+{
+    std::cout << "Invalid syntax. Proper command usage: " << name << " X Y num_threads x_goal y_goal" << std::endl;
+    exit(1);
+}
+
 int main(int argc, char* argv[])
 {
     if(argc < 1)
-        exit(1);
+        displayHelp(argv[0]);
     
     if(argv[0] == nullptr) {}
     
     //------------------------------------------------------------------------
     //      Iterative (Sequential) Implementation
     //------------------------------------------------------------------------
-    IterativeMDFS mdfs_iterative(200, 200);
+    IterativeMDFS mdfs_iterative(2000, 2000);
 
     //Goal tile (x, y, goal_id = 1)
-    mdfs_iterative.SetGoalTile(95, 38);
+    mdfs_iterative.SetGoalTile(954, 384);
 
     //Enemy tiles (x, y, enemy_id = 2)
     mdfs_iterative.SetTileID(1, 2, 2);
@@ -46,9 +52,9 @@ int main(int argc, char* argv[])
     //------------------------------------------------------------------------
     //      Parallel Implementation
     //------------------------------------------------------------------------
-    ParallelMDFS mdfs_parallel(200, 200, 4); //4 threads
+    ParallelMDFS mdfs_parallel(2000, 2000, 4); //4 threads
 
-    mdfs_parallel.SetGoalTile(95, 38);
+    mdfs_parallel.SetGoalTile(954, 384);
 
     mdfs_parallel.SetTileID(1, 2, 2);
     mdfs_parallel.SetTileID(1, 8, 2);
