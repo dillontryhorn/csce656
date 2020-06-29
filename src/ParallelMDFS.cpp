@@ -27,7 +27,9 @@ bool ParallelMDFS::Execute(int x, int y)
             {
                 if(std::get<1>(tup)->getID() != 2) //don't cross into enemy node
                 {
-                    if(ParallelMDFS::Worker(std::get<1>(tup)) == 1) //goal node found
+                    std::vector<std::shared_ptr<Tile>> localSP;
+                    localSP.emplace_back(startingTile);
+                    if(ParallelMDFS::Worker(std::get<1>(tup), localSP) == 1) //goal node found
                         return true;
                 }
             }
@@ -36,7 +38,7 @@ bool ParallelMDFS::Execute(int x, int y)
     return false; //goal node not found
 }
 
-int ParallelMDFS::Worker(std::shared_ptr<Tile> tile)
+int ParallelMDFS::Worker(std::shared_ptr<Tile> tile, std::vector<std::shared_ptr<Tile>> localSP)
 {
     if(tile != nullptr)
     {
@@ -46,7 +48,10 @@ int ParallelMDFS::Worker(std::shared_ptr<Tile> tile)
             this->searchPath.emplace_back(tile);
         }
         if(tile->getID() == 1) //goal node
+        {
+            this->searchPath = localSP;
             return 1;
+        }
         auto neighbors = this->tilegraph->GetNeighbors(tile);
         std::vector<std::tuple<int, std::shared_ptr<Tile>>> hTups;
         for(auto neighbor : neighbors)
@@ -56,7 +61,7 @@ int ParallelMDFS::Worker(std::shared_ptr<Tile> tile)
         {
             if(std::get<1>(tup)->getID() != 2 && !std::get<1>(tup)->isDiscovered()) //don't cross into enemy node
             {
-                if(ParallelMDFS::Worker(std::get<1>(tup)) == 1) //goal node found
+                if(ParallelMDFS::Worker(std::get<1>(tup), localSP) == 1) //goal node found
                     return 1;
             }
         }

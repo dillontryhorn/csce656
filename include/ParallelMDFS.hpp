@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MDFS.hpp"
+#include "ThreadPool.hpp"
 
 #include <omp.h>
 #include <vector>
@@ -16,8 +17,8 @@ class ParallelMDFS : public MDFS
         ~ParallelMDFS() {}
 
         bool Execute(int x, int y);
-        int Worker(std::shared_ptr<Tile> tile);
+        int Worker(std::shared_ptr<Tile> tile, std::vector<std::shared_ptr<Tile>> localSP);
     private:
         unsigned int num_threads = 1;
-        std::vector<std::thread*> threadPool;
+        ThreadPool *pool;
 };

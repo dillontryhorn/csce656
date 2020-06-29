@@ -12,6 +12,7 @@
 
 // C++ Implementation of a Thread Pool
 // Code taken from - https://github.com/mtrebi/thread-pool/blob/master/include/ThreadPool.h
+// Modified to fix compiler warnings
 
 class ThreadPool
 {
@@ -28,7 +29,7 @@ class ThreadPool
         // Inits thread pool
         void init() 
         {
-            for (int i = 0; i < m_threads.size(); ++i)
+            for (unsigned int i = 0; i < m_threads.size(); ++i)
                 m_threads[i] = std::thread(ThreadWorker(this, i));
         }
 
@@ -38,13 +39,12 @@ class ThreadPool
             m_shutdown = true;
             m_conditional_lock.notify_all();
             
-            for (int i = 0; i < m_threads.size(); ++i) 
+            for (unsigned int i = 0; i < m_threads.size(); ++i) 
             {
                 if(m_threads[i].joinable())
                     m_threads[i].join();
             }
         }
-
 
         // Submit a function to be executed asynchronously by the pool
         template<typename F, typename...Args>
@@ -70,11 +70,7 @@ class ThreadPool
             return task_ptr->get_future();
         }
     private:
-
         class ThreadWorker {
-            private:
-                int m_id;
-                ThreadPool * m_pool;
             public:
                 ThreadWorker(ThreadPool * pool, const int id)
                 : m_pool(pool), m_id(id) {}
@@ -97,11 +93,14 @@ class ThreadPool
                         }
                     }
                 }
+            private:
+                ThreadPool *m_pool;
+                int m_id;
         };
 
+        std::vector<std::thread> m_threads;
         bool m_shutdown;
         SafeQueue<std::function<void()>> m_queue;
-        std::vector<std::thread> m_threads;
         std::mutex m_conditional_mutex;
         std::condition_variable m_conditional_lock;
 };
