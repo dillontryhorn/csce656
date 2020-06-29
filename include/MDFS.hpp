@@ -28,6 +28,7 @@ class MDFS
         void SetGoalTile(int x, int y);
 
         std::vector<std::shared_ptr<Tile>> GetSearchPath();
+        int GetSearchPathSize();
         void PrintSearchPath();
         void PrintSearchPathCoords();
 

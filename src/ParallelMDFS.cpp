@@ -45,7 +45,7 @@ int ParallelMDFS::Worker(std::shared_ptr<Tile> tile, std::vector<std::shared_ptr
         if(!tile->isDiscovered())
         {
             tile->setDiscovered(true);
-            this->searchPath.emplace_back(tile);
+            localSP.emplace_back(tile);
         }
         if(tile->getID() == 1) //goal node
         {

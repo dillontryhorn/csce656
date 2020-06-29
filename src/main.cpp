@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
         std::cout << "yes";
     else
         std::cout << "no";
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl << "Search Path Size: " << mdfs_iterative.GetSearchPathSize() << std::endl << std::endl;
 
     //------------------------------------------------------------------------
     //      Parallel Implementation
@@ -58,14 +58,14 @@ int main(int argc, char* argv[])
     mdfs_parallel.Execute(0, 0);
     end = std::chrono::steady_clock::now();
     //mdfs_parallel.PrintSearchPathCoords();
-    std::cout << "Parallel modified depth first search complete. Took "
+    std::cout << "Parallel modified depth first search complete.  Took "
               << std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count()
               << " nanoseconds. " << "Goal node found: ";
     if(success)
         std::cout << "yes";
     else
         std::cout << "no";
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl << "Search Path Size: " << mdfs_parallel.GetSearchPathSize() << std::endl << std::endl;
 
     return 0;
 }

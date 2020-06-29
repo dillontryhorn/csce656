@@ -48,6 +48,11 @@ std::vector<std::shared_ptr<Tile>> MDFS::GetSearchPath()
     return this->searchPath;
 }
 
+int MDFS::GetSearchPathSize()
+{
+    return this->searchPath.size();
+}
+
 void MDFS::PrintSearchPath()
 {
     for(auto tile : searchPath)
