@@ -43,6 +43,11 @@ void MDFS::SetGoalTile(int x, int y)
     }
 }
 
+std::vector<std::shared_ptr<Tile>> MDFS::GetAllTiles()
+{
+    return this->tilegraph->GetAllTiles();
+}
+
 std::vector<std::shared_ptr<Tile>> MDFS::GetSearchPath()
 {
     return this->searchPath;

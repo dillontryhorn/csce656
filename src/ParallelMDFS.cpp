@@ -69,7 +69,7 @@ int ParallelMDFS::Worker(std::shared_ptr<Tile> tile, std::vector<std::shared_ptr
             {
                 if(ParallelMDFS::Worker(std::get<1>(*it), localSP) == 1)
                     success = true;
-                //auto future = this->pool->submit(&ParallelMDFS::Worker, std::get<1>(tup), localSP);
+                //auto future = this->pool->submit(&ParallelMDFS::Worker, this, std::get<1>(*it), localSP);
                 //if(future.get() == 1) //goal node found
                 //    return 1;
             }

@@ -8,6 +8,8 @@
 #include <utility>
 #include <vector>
 
+#include <type_traits>
+
 #include "SafeQueue.hpp"
 
 // C++ Implementation of a Thread Pool
@@ -48,7 +50,7 @@ class ThreadPool
 
         // Submit a function to be executed asynchronously by the pool
         template<typename F, typename...Args>
-        auto submit(F&& f, Args&&... args) -> std::future<decltype(f(args...))> {
+        auto submit(F&& f, Args&&... args) -> std::future<std::result_of<F, Args...>> {
             // Create a function with bounded parameters ready to execute
             std::function<decltype(f(args...))()> func = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
             // Encapsulate it into a shared ptr in order to be able to copy construct / assign 
